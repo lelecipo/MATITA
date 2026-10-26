@@ -1,6 +1,6 @@
 {
-  "name": "Matite",
-  "short_name": "Matite",
+  "name": "Matita",
+  "short_name": "Matita",
   "description": "Calendario allenamenti a colori",
   "start_url": "./index.html",
   "scope": "./",

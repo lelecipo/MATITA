@@ -7,11 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Matite">
+<meta name="apple-mobile-web-app-title" content="Matita">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
-<title>Matite</title>
+<title>Matita</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -53,7 +53,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .nav .title small{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.2em;color:var(--dim)}
 .nav .arrows{display:flex;gap:8px}
 
-#view{flex:1;min-height:0;overflow:hidden}
+/* margine negativo + padding uguale: lascia 4px di spazio ai lati così il contorno del giorno di oggi non viene tagliato (domenica e lunedì), senza spostare nulla */
+#view{flex:1;min-height:0;overflow:hidden;margin:0 -4px;padding:0 4px}
 #view.scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 
 .dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
@@ -143,7 +144,7 @@ button.lrow:active{transform:scale(.97)}
 
 <div id="app">
   <header>
-    <div class="brand"><i></i>MATITE</div>
+    <div class="brand"><i></i>MATITA</div>
     <button class="iconbtn" id="btnSet" aria-label="Backup">
       <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>
       <span class="badge"></span>
@@ -435,7 +436,7 @@ $('#btnSet').onclick=()=>{
 };
 $('#btnExport').onclick=async()=>{
   const payload=JSON.stringify({app:'training-log',version:2,exported:new Date().toISOString(),data,schede},null,1);
-  const name=`matite-backup-${new Date().toISOString().slice(0,10)}.json`;
+  const name=`matita-backup-${new Date().toISOString().slice(0,10)}.json`;
   const file=new File([payload],name,{type:'application/json'});
   try{
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name})}
