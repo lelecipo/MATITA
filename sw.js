@@ -1,5 +1,5 @@
 // Cambia questo numero ogni volta che aggiorni i file dell'app
-const CACHE = 'matita-v11';
+const CACHE = 'matita-v12';
 const CORE = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

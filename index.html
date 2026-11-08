@@ -35,6 +35,7 @@ body{position:fixed;inset:0;width:100%;overflow:hidden;-webkit-user-select:none;
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
 #app,#scheda .in,#stats .in{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:var(--sat) 18px calc(var(--sab) + 14px)}
+#app{padding-bottom:calc(var(--sab)*.5 + 8px)}
 
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;flex:none}
 .brand{font-family:var(--dot);font-weight:800;font-size:15px;letter-spacing:.12em;display:flex;align-items:center;gap:8px}
@@ -55,7 +56,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 
 /* margine negativo + padding uguale: lascia 4px di spazio ai lati così il contorno del giorno di oggi non viene tagliato (domenica e lunedì), senza spostare nulla */
 #view{flex:1;min-height:0;overflow:hidden;margin:0 -4px;padding:0 4px}
-#view.scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+#view.scroll{overflow:hidden;overscroll-behavior:none;display:flex;flex-direction:column}
 
 .dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .dow{margin-bottom:6px}
@@ -69,7 +70,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .cell.filled{border-color:transparent;font-weight:700}
 .cell{-webkit-touch-callout:none}
 /* giorno "spento": meno visibile ma sempre presente (tienilo premuto per spegnerlo o riaccenderlo) */
-.cell.off{color:#3d3d3d;border-color:#161616;background:#050505}
+.cell.off{color:#555;border:1.5px dashed #3a3a3a;background:transparent}
+.cell.off::before{content:'';position:absolute;left:22%;right:22%;top:50%;height:1.5px;background:#3a3a3a}
 
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
 .lrow{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px 9px}
@@ -151,10 +153,10 @@ button.lrow:active{transform:scale(.97)}
 .vsw button{width:40px;height:28px;border-radius:999px;display:grid;place-items:center;color:var(--dim)}
 .vsw button svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .vsw button.on{background:var(--text);color:#000}
-.mlist{flex:1 0 auto;display:flex;flex-direction:column}
-.mlist .mrow{flex:1 0 auto}
-.mgrid{flex:1 0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 12px;align-content:space-between;margin:10px 0 6px}
-.mm{display:block;width:100%;text-align:left}
+.mlist{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+.mlist .mrow{flex:1 1 0;min-height:0}
+.mgrid{flex:1 1 0;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 12px;align-content:space-between;margin:10px 0 6px}
+.mm{display:block;width:100%;text-align:left;align-self:start}
 .mm .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
 .mm .hd span{font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
 .mm .hd b{font-family:var(--dot);font-weight:800;font-size:16px}
@@ -366,6 +368,8 @@ function render(){
     el.innerHTML=`${view.y}<small>Riepilogo</small>`;
     v.innerHTML=yearHTML();
     v.scrollTop=0;
+    /* pagina fissa; scorre solo se su uno schermo molto piccolo non ci sta */
+    v.style.overflowY=(v.scrollHeight>v.clientHeight+2)?'auto':'hidden';
   }
   updateWarn();
 }
@@ -509,8 +513,7 @@ function openDay(d){
   const wd=GIORNI_L[new Date(y,m,d).getDay()];
   $('#daySheet').innerHTML=`<h3>${d} ${MESI[m]}</h3><p>${wd.toUpperCase()} ${y}${spenti[k]&&!cur?' · SPENTO':''}</p>
   ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
-  <button class="opt clear" data-t=""><span class="xs"></span>Nessun allenamento</button>
-  <div class="note">Per spegnere un giorno di riposo, tienilo premuto nel calendario.</div>`;
+  <button class="opt clear" data-t=""><span class="xs"></span>Gomma</button>`;
   $('#daySheet').dataset.k=k;
   openSheet('daySheet');
 }
