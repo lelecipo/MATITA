@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#3b82f6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-title" content="PROVA 1">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>PROVA 1</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#f2f2f2;font:14px/1.5 ui-monospace,Menlo,monospace}
+.band{background:#3b82f6;color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 18px 18px}
+.band b{display:block;font-size:26px;letter-spacing:.05em}
+.band span{font-size:12px;opacity:.9}
+.body{padding:18px}
+.body p{margin:0 0 10px;color:#9a9a9a}
+.body b{color:#fff}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #222}
+.hdr i{width:10px;height:10px;border-radius:50%;background:#d71921;display:inline-block;margin-right:8px}
+.circle{width:40px;height:40px;border:1px solid #333;border-radius:50%}
+#sb{position:fixed;top:0;left:0;right:0;height:11px;pointer-events:none;background:#3b82f6;-webkit-background-clip:text;background-clip:text;z-index:9}
+#probe{position:fixed;top:0;left:0;height:env(safe-area-inset-top);width:1px}
+</style></head><body>
+<div id="probe"></div>
+<div class="band"><b>PROVA 1</b><span>Nessuna riga sullo stile della barra di stato</span></div>
+<div class="hdr"><div><i></i>MATITA</div><div class="circle"></div></div>
+<div class="body">
+<p>Guarda la parte <b>in alto</b>, sopra la fascia blu e vicino all'orologio.</p>
+<p>C'è una <b>sfumatura scura</b> che copre la fascia? Il colore blu arriva fino al bordo dello schermo?</p>
+<p id="out"></p>
+</div>
+<script>
+const st=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+document.getElementById('out').innerHTML='In modalità app: <b>'+(st?'sì':'no')+'</b><br>Margine sicuro in alto: <b>'+document.getElementById('probe').offsetHeight+' pt</b><br>Altezza finestra: <b>'+innerHeight+'</b> · schermo: <b>'+screen.height+'</b>';
+</script></body></html>
