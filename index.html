@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Matita">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -34,7 +34,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-famil
 body{position:fixed;inset:0;width:100%;overflow:hidden;-webkit-user-select:none;user-select:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
-#app,#scheda .in{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:var(--sat) 18px calc(var(--sab) + 14px)}
+#app,#scheda .in,#stats .in{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:var(--sat) 18px calc(var(--sab) + 14px)}
 
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;flex:none}
 .brand{font-family:var(--dot);font-weight:800;font-size:15px;letter-spacing:.12em;display:flex;align-items:center;gap:8px}
@@ -55,7 +55,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 
 /* margine negativo + padding uguale: lascia 4px di spazio ai lati così il contorno del giorno di oggi non viene tagliato (domenica e lunedì), senza spostare nulla */
 #view{flex:1;min-height:0;overflow:hidden;margin:0 -4px;padding:0 4px}
-#view.scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#view.scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
 
 .dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .dow{margin-bottom:6px}
@@ -67,6 +67,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .cell.empty{border:0;pointer-events:none}
 .cell.today::after{content:"";position:absolute;inset:-3px;border:1px solid var(--text);border-radius:15px}
 .cell.filled{border-color:transparent;font-weight:700}
+.cell{-webkit-touch-callout:none}
+/* giorno "spento": meno visibile ma sempre presente (tienilo premuto per spegnerlo o riaccenderlo) */
+.cell.off{color:#3d3d3d;border-color:#161616;background:#050505}
 
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
 .lrow{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px 9px}
@@ -83,11 +86,12 @@ button.lrow:active{transform:scale(.97)}
 .total span{font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
 .total b{font-family:var(--dot);font-weight:800;font-size:34px;line-height:1}
 
-.mrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
-.mrow .mn{width:34px;font-size:11px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
-.mrow .bar{flex:1;height:10px;display:flex;gap:2px;border-radius:5px;overflow:hidden;background:#111}
-.mrow .bar i{display:block;height:100%}
-.mrow .mt{width:28px;text-align:right;font-family:var(--dot);font-weight:800;font-size:20px}
+.mrow{display:flex;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.mrow .mn{width:34px;font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.mrow .bar{flex:1;height:10px;display:flex;align-items:center}
+.mrow .trk{height:10px;display:flex;gap:2px;border-radius:5px;overflow:hidden;background:#111}
+.mrow .trk i{display:block;height:100%}
+.mrow .mt{width:28px;text-align:right;font-family:var(--dot);font-weight:800;font-size:17px}
 .mrow.zero .mt{color:var(--dim)}
 .sec{font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin:22px 0 4px}
 
@@ -135,6 +139,66 @@ button.lrow:active{transform:scale(.97)}
 .opt.clear .xs{width:18px;height:18px;border:1px dashed var(--dim);border-radius:50%}
 .note{font-size:10px;color:var(--dim);line-height:1.6;margin-top:6px}
 
+.hdr2{display:flex;gap:8px;align-items:center}
+/* legenda compatta (pagina Anno) */
+.legend.cp{margin-top:10px}
+.lrow.cp{padding:9px 12px}
+.lrow.cp .sub{display:none}
+.total.cp{padding-top:10px}
+.sech{display:flex;align-items:center;justify-content:space-between;margin:12px 0 2px;flex:none}
+.sech .sec{margin:0}
+.vsw{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.vsw button{width:40px;height:28px;border-radius:999px;display:grid;place-items:center;color:var(--dim)}
+.vsw button svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.vsw button.on{background:var(--text);color:#000}
+.mlist{flex:1 0 auto;display:flex;flex-direction:column}
+.mlist .mrow{flex:1 0 auto}
+.mgrid{flex:1 0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 12px;align-content:space-between;margin:10px 0 6px}
+.mm{display:block;width:100%;text-align:left}
+.mm .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.mm .hd span{font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.mm .hd b{font-family:var(--dot);font-weight:800;font-size:16px}
+.mm .d{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mm .d i{aspect-ratio:1/1.15;border-radius:2.5px;background:#151515;display:block}
+.mm .d i.x{background:transparent}
+.mm .d i.off{background:#070707;outline:1px solid #141414;outline-offset:-1px}
+.mm .d i.t{outline:1px solid #f2f2f2;outline-offset:1px}
+
+/* ---------- statistiche ---------- */
+#stats{display:none;position:fixed;inset:0;z-index:5;background:var(--bg)}
+#stats.on{display:block}
+.pgh{display:flex;align-items:center;gap:12px;padding:10px 0 8px;flex:none}
+.pgh h2{margin:0;font-family:var(--dot);font-weight:800;font-size:26px;letter-spacing:.05em;text-transform:uppercase;line-height:1}
+.pgh small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.2em;color:var(--dim);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.card .l{font-size:9.5px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.card .v{font-family:var(--dot);font-weight:800;font-size:34px;line-height:1;margin-top:8px}
+.card .v small{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--dim);letter-spacing:.06em;margin-left:4px}
+.card .s{font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.04em}
+.arow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.arow .nm{width:78px;font-size:11px;white-space:nowrap}
+.arow .bar{flex:1;height:8px;background:#111;border-radius:4px;overflow:hidden}
+.arow .bar i{display:block;height:100%}
+.arow .pc{width:34px;text-align:right;font-size:10px;color:var(--dim)}
+.arow .n{width:28px;text-align:right;font-family:var(--dot);font-weight:800;font-size:18px}
+.arow .dn{width:34px;font-size:11px;letter-spacing:.12em;color:var(--dim)}
+.arow.best .dn{color:var(--text)}
+.arow.best .bar i{background:var(--text)!important}
+.arow .bar i.w{background:#4a4a4a}
+.stbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:12px}
+
+/* ---------- avviso backup ---------- */
+#bk{display:none;position:fixed;inset:0;z-index:30;background:var(--accent);color:#fff;flex-direction:column;padding:calc(var(--sat) + 20px) 24px calc(var(--sab) + 18px)}
+#bk.on{display:flex}
+#bk .sp{flex:1}
+#bk .big{font-family:var(--dot);font-weight:800;line-height:.9;white-space:nowrap;color:#fff}
+#bk .lab{font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin:16px 0 0 4px;color:rgba(255,255,255,.85)}
+#bk .btns{display:flex;flex-direction:column;gap:10px;margin-top:40px}
+#bk .pill{padding:16px 0;color:#fff;border-color:rgba(255,255,255,.55)}
+#bk .pill.main{background:#fff;color:var(--accent);border-color:#fff}
+#hap{position:fixed;left:-200px;top:0;width:40px;height:40px;opacity:0;pointer-events:none}
+
 /* iPhone non permette di bloccare la rotazione da un'app web: in orizzontale mostro una schermata nera */
 #rot{display:none;position:fixed;inset:0;z-index:50;background:#000;place-items:center;text-align:center;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
 @media (orientation:landscape) and (max-height:520px){#rot{display:grid}}
@@ -145,10 +209,13 @@ button.lrow:active{transform:scale(.97)}
 <div id="app">
   <header>
     <div class="brand"><i></i>MATITA</div>
-    <button class="iconbtn" id="btnSet" aria-label="Backup">
-      <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>
-      <span class="badge"></span>
-    </button>
+    <div class="hdr2">
+      <button class="iconbtn" id="btnStats" aria-label="Statistiche"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-7"/></svg></button>
+      <button class="iconbtn" id="btnSet" aria-label="Backup">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>
+        <span class="badge"></span>
+      </button>
+    </div>
   </header>
 
   <div class="tabs">
@@ -187,6 +254,22 @@ button.lrow:active{transform:scale(.97)}
   <input type="file" id="file" accept=".json,application/json" hidden>
   <div class="note">Consiglio: esporta una volta al mese e salva il file in iCloud Drive (dal foglio di condivisione scegli "Salva su File").</div>
 </div>
+<div id="stats">
+  <div class="in">
+    <div class="pgh">
+      <button class="iconbtn" id="stBack" aria-label="Indietro"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div><h2>Statistiche</h2><small id="stSub"></small></div>
+    </div>
+    <div class="stbody" id="stBody"></div>
+  </div>
+</div>
+<div id="bk">
+  <div class="sp"></div>
+  <div class="big" id="bkN">0</div>
+  <div class="lab" id="bkL">Giorni dall'ultimo backup</div>
+  <div class="btns"><button class="pill main" id="bkYes">Backup</button><button class="pill" id="bkLater">Dopo</button></div>
+</div>
+<label id="hap" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>
 <div id="rot">Ruota il telefono<br>in verticale</div>
 
 <script>
@@ -245,9 +328,18 @@ const saveSchede=()=>{
   catch(e){alert('Attenzione: il telefono non permette di salvare le schede. Esporta subito un backup.')}
 };
 
-const now=new Date();
+/* ---------- dati: giorni spenti (riposo, solo visivo) ---------- */
+const PKEY='training-log-spenti-v1';
+let spenti={};
+try{const a=JSON.parse(localStorage.getItem(PKEY)||'[]'); if(Array.isArray(a)) a.forEach(k=>{if(/^\d{4}-\d{2}-\d{2}$/.test(k))spenti[k]=1})}catch(e){}
+const saveSpenti=()=>{try{localStorage.setItem(PKEY,JSON.stringify(Object.keys(spenti).sort()))}catch(e){}};
+
+let now=new Date();
 let view={y:now.getFullYear(),m:now.getMonth()};
 let mode='month';
+const YVKEY='matita-yearview';
+let yv='grid';
+try{const v=localStorage.getItem(YVKEY); if(v==='bars'||v==='grid')yv=v}catch(e){}
 
 const pad=n=>String(n).padStart(2,'0');
 const key=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
@@ -276,13 +368,13 @@ function render(){
 }
 
 const ARROW='<svg class="go" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>';
-function legendHTML(c,tot,label){
-  return `<div class="legend">${TYPES.map(t=>{
+function legendHTML(c,tot,label,cp){
+  return `<div class="legend${cp?' cp':''}">${TYPES.map(t=>{
     const inner=`<div class="top"><span class="sw" style="background:${t.color}"></span><span class="nm">${t.name}</span><span class="ct">${c[t.id]}</span></div>
       <div class="sub"><em>${t.desc||'&nbsp;'}</em>${t.id!=='D'?ARROW:''}</div>`;
-    return t.id!=='D'?`<button class="lrow" data-s="${t.id}">${inner}</button>`:`<div class="lrow">${inner}</div>`;
+    return t.id!=='D'?`<button class="lrow${cp?' cp':''}" data-s="${t.id}">${inner}</button>`:`<div class="lrow${cp?' cp':''}">${inner}</div>`;
   }).join('')}</div>
-    <div class="total"><span>${label}</span><b>${tot}</b></div>`;
+    <div class="total${cp?' cp':''}"><span>${label}</span><b>${tot}</b></div>`;
 }
 
 function monthHTML(){
@@ -294,7 +386,7 @@ function monthHTML(){
   const isCur=(y===now.getFullYear()&&m===now.getMonth());
   for(let d=1;d<=dim;d++){
     const k=key(y,m,d), t=byId[data[k]];
-    const cls='cell'+(t?' filled':'')+(isCur&&d===now.getDate()?' today':'');
+    const cls='cell'+(t?' filled':'')+(!t&&spenti[k]?' off':'')+(isCur&&d===now.getDate()?' today':'');
     const st=t?`style="background:${t.color};color:${t.ink}"`:'';
     cells+=`<button class="${cls}" ${st} data-d="${d}">${d}</button>`;
   }
@@ -307,13 +399,36 @@ function monthHTML(){
 function yearHTML(){
   const y=view.y;
   const {c,tot}=counts(`${y}-`);
-  let rows='';
-  for(let m=0;m<12;m++){
-    const r=counts(`${y}-${pad(m+1)}-`);
-    const segs=TYPES.map(t=>r.c[t.id]?`<i style="background:${t.color};width:${r.c[t.id]/31*100}%"></i>`:'').join('');
-    rows+=`<button class="mrow ${r.tot?'':'zero'}" data-m="${m}"><span class="mn">${MESI3[m]}</span><div class="bar">${segs}</div><span class="mt">${r.tot}</span></button>`;
+  const IB='<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h11M4 17h7"/></svg>';
+  const IG='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="4.5" height="4.5" rx="1"/><rect x="9.8" y="4" width="4.5" height="4.5" rx="1"/><rect x="15.5" y="4" width="4.5" height="4.5" rx="1"/><rect x="4" y="9.8" width="4.5" height="4.5" rx="1"/><rect x="9.8" y="9.8" width="4.5" height="4.5" rx="1"/><rect x="15.5" y="9.8" width="4.5" height="4.5" rx="1"/><rect x="4" y="15.5" width="4.5" height="4.5" rx="1"/><rect x="9.8" y="15.5" width="4.5" height="4.5" rx="1"/><rect x="15.5" y="15.5" width="4.5" height="4.5" rx="1"/></svg>';
+  const sw=`<div class="sech"><div class="sec">Mese per mese</div><div class="vsw"><button data-v="bars" aria-label="Barre" class="${yv==='bars'?'on':''}">${IB}</button><button data-v="grid" aria-label="Griglia" class="${yv==='grid'?'on':''}">${IG}</button></div></div>`;
+  let body='';
+  if(yv==='bars'){
+    let rows='';
+    for(let m=0;m<12;m++){
+      const r=counts(`${y}-${pad(m+1)}-`);
+      const nOff=Object.keys(spenti).filter(k=>k.startsWith(`${y}-${pad(m+1)}-`)&&!data[k]).length;
+      const avail=Math.max(1,31-nOff);          /* i giorni spenti accorciano la barra */
+      const segs=TYPES.map(t=>r.c[t.id]?`<i style="background:${t.color};width:${r.c[t.id]/avail*100}%"></i>`:'').join('');
+      rows+=`<button class="mrow ${r.tot?'':'zero'}" data-m="${m}"><span class="mn">${MESI3[m]}</span><div class="bar"><div class="trk" style="width:${avail/31*100}%">${segs}</div></div><span class="mt">${r.tot}</span></button>`;
+    }
+    body=`<div class="mlist">${rows}</div>`;
+  }else{
+    const todayK=key(now.getFullYear(),now.getMonth(),now.getDate());
+    let ms='';
+    for(let m=0;m<12;m++){
+      const first=(new Date(y,m,1).getDay()+6)%7, dim=new Date(y,m+1,0).getDate();
+      let cells='<i class="x"></i>'.repeat(first);
+      for(let d=1;d<=dim;d++){
+        const k=key(y,m,d), t=byId[data[k]];
+        cells+=`<i class="${!t&&spenti[k]?'off':''}${k===todayK?' t':''}"${t?` style="background:${t.color}"`:''}></i>`;
+      }
+      const r=counts(`${y}-${pad(m+1)}-`);
+      ms+=`<button class="mm" data-m="${m}"><div class="hd"><span>${MESI3[m]}</span><b>${r.tot}</b></div><div class="d">${cells}</div></button>`;
+    }
+    body=`<div class="mgrid">${ms}</div>`;
   }
-  return `${legendHTML(c,tot,'Allenamenti nell\'anno')}<div class="sec">Mese per mese</div>${rows}`;
+  return `${legendHTML(c,tot,'Allenamenti nell\'anno',true)}${sw}${body}`;
 }
 
 /* navigation */
@@ -333,18 +448,46 @@ const schedaOpen=()=>$('#scheda').classList.contains('on');
 let sx=null,sy=null;
 document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
 document.addEventListener('touchend',e=>{
-  if(sx===null||sheetOpen()||schedaOpen())return;
+  if(sx===null||sheetOpen()||schedaOpen()||$('#stats').classList.contains('on')||$('#bk').classList.contains('on'))return;
   const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
   if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) shift(dx<0?1:-1);
   sx=null;
 },{passive:true});
 
 /* day / month / scheda clicks */
+/* pressione lunga su un giorno senza allenamento: lo spegne (o lo riaccende) */
+let lpT=null,lpX=0,lpY=0,lpFired=0;
+const lpCancel=()=>{clearTimeout(lpT);lpT=null};
+$('#view').addEventListener('pointerdown',e=>{
+  const c=e.target.closest('.cell[data-d]'); if(!c)return;
+  lpX=e.clientX;lpY=e.clientY; lpCancel();
+  lpT=setTimeout(()=>{
+    lpT=null;
+    const k=key(view.y,view.m,+c.dataset.d);
+    if(data[k])return;                       /* i giorni con un allenamento non si spengono */
+    if(spenti[k])delete spenti[k]; else spenti[k]=1;
+    saveSpenti(); lpFired=Date.now(); render();
+  },480);
+});
+$('#view').addEventListener('pointermove',e=>{if(lpT&&Math.hypot(e.clientX-lpX,e.clientY-lpY)>10)lpCancel()});
+['pointerup','pointercancel','pointerleave'].forEach(n=>$('#view').addEventListener(n,lpCancel));
+$('#view').addEventListener('contextmenu',e=>e.preventDefault());
+
 $('#view').addEventListener('click',e=>{
+  if(Date.now()-lpFired<800)return;           /* il rilascio dopo una pressione lunga non apre il foglio */
   const s=e.target.closest('.lrow[data-s]'); if(s){openScheda(s.dataset.s);return}
   const c=e.target.closest('.cell[data-d]'); if(c){openDay(+c.dataset.d);return}
-  const r=e.target.closest('.mrow'); if(r){view.m=+r.dataset.m;mode='month';render()}
+  const vb=e.target.closest('[data-v]'); if(vb){yv=vb.dataset.v;try{localStorage.setItem(YVKEY,yv)}catch(_){}render();return}
+  const r=e.target.closest('.mrow,.mm'); if(r){view.m=+r.dataset.m;mode='month';render()}
 });
+
+/* tic al tocco: iPhone non ha la vibrazione web, ma un interruttore di sistema nascosto dà un colpetto (iOS 17.4+) */
+function haptic(){
+  try{
+    if(navigator.vibrate)navigator.vibrate(10);
+    const l=document.getElementById('hap'); if(l)l.click();
+  }catch(e){}
+}
 
 /* sheets */
 const sheetOpen=()=>$('#ov').classList.contains('on');
@@ -355,18 +498,19 @@ $('#ov').onclick=closeSheets;
 function openDay(d){
   const {y,m}=view, k=key(y,m,d), cur=data[k];
   const wd=GIORNI_L[new Date(y,m,d).getDay()];
-  $('#daySheet').innerHTML=`<h3>${d} ${MESI[m]}</h3><p>${wd.toUpperCase()} ${y}</p>
+  $('#daySheet').innerHTML=`<h3>${d} ${MESI[m]}</h3><p>${wd.toUpperCase()} ${y}${spenti[k]&&!cur?' · SPENTO':''}</p>
   ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
-  <button class="opt clear" data-t=""><span class="xs"></span>Nessun allenamento</button>`;
+  <button class="opt clear" data-t=""><span class="xs"></span>Nessun allenamento</button>
+  <div class="note">Per spegnere un giorno di riposo, tienilo premuto nel calendario.</div>`;
   $('#daySheet').dataset.k=k;
   openSheet('daySheet');
 }
 $('#daySheet').addEventListener('click',e=>{
   const b=e.target.closest('.opt'); if(!b)return;
   const k=$('#daySheet').dataset.k, t=b.dataset.t;
-  if(t) data[k]=t; else delete data[k];
+  if(t){data[k]=t;delete spenti[k];saveSpenti()} else delete data[k];
   save(); closeSheets(); render();
-  if(navigator.vibrate)navigator.vibrate(8);
+  if(t)haptic();                              /* un piccolo "tic" quando assegni un'attività */
 });
 
 /* ---------- scheda: apertura, spunte, azzera, modifica ---------- */
@@ -434,17 +578,90 @@ $('#btnSet').onclick=()=>{
   $('#lastBackup').textContent=last?('ULTIMO BACKUP: '+new Date(last).toLocaleDateString('it-IT')):'NESSUN BACKUP ANCORA';
   openSheet('setSheet');
 };
-$('#btnExport').onclick=async()=>{
-  const payload=JSON.stringify({app:'training-log',version:2,exported:new Date().toISOString(),data,schede},null,1);
+async function doExport(){
+  const payload=JSON.stringify({app:'training-log',version:3,exported:new Date().toISOString(),data,schede,spenti:Object.keys(spenti).sort()},null,1);
   const name=`matita-backup-${new Date().toISOString().slice(0,10)}.json`;
   const file=new File([payload],name,{type:'application/json'});
   try{
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name})}
     else{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
     localStorage.setItem(KB,Date.now());
-    closeSheets();updateWarn();
-  }catch(e){/* annullato */}
-};
+    return true;
+  }catch(e){return false}   /* annullato */
+}
+$('#btnExport').onclick=async()=>{ if(await doExport()){closeSheets();updateWarn()} };
+
+/* ---------- avviso backup (dopo 30 giorni; "Dopo" lo rimanda di 3 giorni) ---------- */
+const BSN='matita-backup-rimanda';
+function bkDays(){
+  const last=+localStorage.getItem(KB)||0;
+  let ref=last;
+  if(!ref){const ks=Object.keys(data).filter(k=>byId[data[k]]).sort(); if(!ks.length)return null; const [y,m,d]=ks[0].split('-').map(Number); ref=new Date(y,m-1,d).getTime()}
+  return {n:Math.floor((Date.now()-ref)/864e5),never:!last};
+}
+function fitBk(){
+  const b=$('#bkN'), box=$('#bk'); if(!box.classList.contains('on'))return;
+  const w=box.clientWidth-48, p=document.createElement('span');
+  p.textContent=b.textContent; p.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;font-family:var(--dot);font-weight:800;font-size:100px';
+  document.body.appendChild(p); const pw=p.offsetWidth||1; p.remove();
+  b.style.fontSize=Math.min(100*w/pw, box.clientHeight*0.5)+'px';
+}
+function maybeBackupScreen(){
+  try{
+    if($('#bk').classList.contains('on'))return;
+    if(!Object.keys(data).length)return;
+    const r=bkDays(); if(!r||r.n<30)return;
+    if(Date.now()<(+localStorage.getItem(BSN)||0))return;
+    $('#bkN').textContent=r.n;
+    $('#bkL').textContent=r.never?'Giorni senza backup':'Giorni dall\'ultimo backup';
+    $('#bk').classList.add('on'); fitBk();
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitBk);
+  }catch(e){}
+}
+$('#bkLater').onclick=()=>{try{localStorage.setItem(BSN,Date.now()+3*864e5)}catch(e){} $('#bk').classList.remove('on')};
+$('#bkYes').onclick=async()=>{ if(await doExport()){$('#bk').classList.remove('on');updateWarn()} };
+window.addEventListener('resize',fitBk);
+
+/* ---------- statistiche ---------- */
+function statsHTML(){
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const todayK=key(today.getFullYear(),today.getMonth(),today.getDate());
+  const ks=Object.keys(data).filter(k=>byId[data[k]]&&k<=todayK).sort();
+  if(!ks.length){$('#stSub').textContent='';return '<div class="empty-s">Nessun allenamento ancora.<br>Le statistiche compaiono dopo il primo.</div>'}
+  const P=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+  const first=P(ks[0]);
+  $('#stSub').textContent=`DAL ${first.getDate()} ${MESI3[first.getMonth()]} ${first.getFullYear()}`;
+  const span=Math.round((today-first)/864e5)+1;
+  const avg=(ks.length/Math.max(1,span/7)).toFixed(1).replace('.',',');
+  let offN=0; for(const k in spenti){ if(!data[k]&&k>=ks[0]&&k<=todayK) offN++ }
+  const denom=span-offN, act=denom>0?Math.round(ks.length/denom*100):0;
+  /* mese e settimana migliori (a parità vince il più recente) */
+  const mc={}, wc={}, wd=[0,0,0,0,0,0,0], tc=Object.fromEntries(TYPES.map(t=>[t.id,0]));
+  for(const k of ks){
+    mc[k.slice(0,7)]=(mc[k.slice(0,7)]||0)+1;
+    const d=P(k), dow=(d.getDay()+6)%7, mon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-dow);
+    const wk=key(mon.getFullYear(),mon.getMonth(),mon.getDate()); wc[wk]=(wc[wk]||0)+1;
+    wd[dow]++; tc[data[k]]++;
+  }
+  let bm=null,bmn=0; Object.keys(mc).sort().forEach(k=>{if(mc[k]>=bmn){bm=k;bmn=mc[k]}});
+  let bw=null,bwn=0; Object.keys(wc).sort().forEach(k=>{if(wc[k]>=bwn){bw=k;bwn=wc[k]}});
+  const [by,bmo]=bm.split('-').map(Number);
+  const w0=P(bw), w1=new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()+6);
+  const f=d=>`${d.getDate()} ${MESI3[d.getMonth()]}`;
+  const tot=ks.length, tmax=Math.max(...TYPES.map(t=>tc[t.id])), wmax=Math.max(...wd);
+  return `<div class="sec" style="margin-top:10px">Costanza</div>
+  <div class="two"><div class="card"><div class="l">Media a settimana</div><div class="v">${avg}<small>/ sett.</small></div><div class="s">dall'inizio</div></div>
+  <div class="card"><div class="l">Giorni attivi</div><div class="v">${act}<small>%</small></div><div class="s">sui giorni non spenti</div></div></div>
+  <div class="sec">Record</div>
+  <div class="two"><div class="card"><div class="l">Mese migliore</div><div class="v">${MESI3[bmo-1]}<small>${bmn}</small></div><div class="s">${by}</div></div>
+  <div class="card"><div class="l">Settimana migliore</div><div class="v">${bwn}<small>allen.</small></div><div class="s">${f(w0)} – ${f(w1)}</div></div></div>
+  <div class="sec">Per attività</div>
+  ${TYPES.map(t=>`<div class="arow"><span class="sw" style="background:${t.color}"></span><span class="nm">${t.name}</span><div class="bar"><i style="background:${t.color};width:${tmax?tc[t.id]/tmax*100:0}%"></i></div><span class="pc">${Math.round(tc[t.id]/tot*100)}%</span><span class="n">${tc[t.id]}</span></div>`).join('')}
+  <div class="sec">Giorno della settimana</div>
+  ${GIORNI.map((g,i)=>`<div class="arow ${wd[i]===wmax&&wmax>0?'best':''}"><span class="dn">${g}</span><div class="bar"><i class="w" style="width:${wmax?wd[i]/wmax*100:0}%"></i></div><span class="n">${wd[i]}</span></div>`).join('')}`;
+}
+$('#btnStats').onclick=()=>{$('#stBody').innerHTML=statsHTML();$('#stBody').scrollTop=0;$('#stats').classList.add('on')};
+$('#stBack').onclick=()=>$('#stats').classList.remove('on');
 $('#btnImport').onclick=()=>$('#file').click();
 $('#file').onchange=async e=>{
   const f=e.target.files[0]; if(!f)return;
@@ -458,13 +675,24 @@ $('#file').onchange=async e=>{
     else if(confirm(`Trovati ${n} allenamenti${sch?' e le schede':''}. Sostituire i dati attuali con quelli del file?`)){
       data=clean;save();
       if(sch){schede=sch;saveSchede()}
+      if(Array.isArray(j&&j.spenti)){spenti={};j.spenti.forEach(k=>{if(/^\d{4}-\d{2}-\d{2}$/.test(k))spenti[k]=1})}   /* i backup vecchi non li hanno: restano quelli attuali */
+      for(const k in spenti) if(data[k]) delete spenti[k];
+      saveSpenti();
+      if(j&&j.exported){const t=Date.parse(j.exported); if(t){try{localStorage.setItem(KB,t)}catch(_){}}}
       closeSheets();render();
     }
   }catch(err){alert('File non valido.')}
   e.target.value='';
 };
 
+/* se l'app resta aperta o torna in primo piano dopo mezzanotte, aggiorna "oggi" */
+function refreshNow(){now=new Date();render();maybeBackupScreen()}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshNow()});
+function armMidnight(){const n=new Date();const ms=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,0,0,2)-n;setTimeout(()=>{refreshNow();armMidnight()},ms)}
+armMidnight();
+
 render();
+maybeBackupScreen();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
