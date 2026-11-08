@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Matita">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -197,6 +197,8 @@ button.lrow:active{transform:scale(.97)}
 #bk .btns{display:flex;flex-direction:column;gap:10px;margin-top:40px}
 #bk .pill{padding:16px 0;color:#fff;border-color:rgba(255,255,255,.55)}
 #bk .pill.main{background:#fff;color:var(--accent);border-color:#fff}
+/* riquadro dipinto in cima: toglie la sfumatura di iOS e dà il colore alla barra di stato (cambia con la schermata) */
+#sb{position:fixed;top:0;left:0;right:0;height:11px;pointer-events:none;background:#000;-webkit-background-clip:text;background-clip:text;z-index:100}
 #hap{position:fixed;left:-200px;top:0;width:40px;height:40px;opacity:0;pointer-events:none}
 
 /* iPhone non permette di bloccare la rotazione da un'app web: in orizzontale mostro una schermata nera */
@@ -205,6 +207,7 @@ button.lrow:active{transform:scale(.97)}
 </style>
 </head>
 <body>
+<div id="sb"></div>
 
 <div id="app">
   <header>
@@ -489,6 +492,12 @@ function haptic(){
   }catch(e){}
 }
 
+/* colore della barra di stato (e del riquadro dipinto in cima) */
+function setBar(c){
+  const e=document.getElementById('sb'); if(e)e.style.background=c;
+  const m=document.querySelector('meta[name="theme-color"]'); if(m)m.setAttribute('content',c);
+}
+
 /* sheets */
 const sheetOpen=()=>$('#ov').classList.contains('on');
 function openSheet(id){$('#ov').classList.add('on');$('#'+id).classList.add('on')}
@@ -526,8 +535,8 @@ function parseLines(txt){
   while(out.length&&out[out.length-1]==='')out.pop();
   return out;
 }
-function openScheda(id){curS=id;editing=false;renderScheda();$('#scheda').classList.add('on');$('#sList').scrollTop=0}
-function closeScheda(){$('#scheda').classList.remove('on');curS=null;editing=false;render()}
+function openScheda(id){curS=id;editing=false;renderScheda();$('#scheda').classList.add('on');$('#sList').scrollTop=0;setBar(byId[id].color)}
+function closeScheda(){$('#scheda').classList.remove('on');curS=null;editing=false;setBar('#000000');render()}
 function renderScheda(){
   if(!curS)return;
   const t=byId[curS], items=schede[curS], list=$('#sList');
@@ -614,12 +623,12 @@ function maybeBackupScreen(){
     if(Date.now()<(+localStorage.getItem(BSN)||0))return;
     $('#bkN').textContent=r.n;
     $('#bkL').textContent=r.never?'Giorni senza backup':'Giorni dall\'ultimo backup';
-    $('#bk').classList.add('on'); fitBk();
+    $('#bk').classList.add('on'); setBar('#d71921'); fitBk();
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitBk);
   }catch(e){}
 }
-$('#bkLater').onclick=()=>{try{localStorage.setItem(BSN,Date.now()+3*864e5)}catch(e){} $('#bk').classList.remove('on')};
-$('#bkYes').onclick=async()=>{ if(await doExport()){$('#bk').classList.remove('on');updateWarn()} };
+$('#bkLater').onclick=()=>{try{localStorage.setItem(BSN,Date.now()+3*864e5)}catch(e){} $('#bk').classList.remove('on');setBar('#000000')};
+$('#bkYes').onclick=async()=>{ if(await doExport()){$('#bk').classList.remove('on');setBar('#000000');updateWarn()} };
 window.addEventListener('resize',fitBk);
 
 /* ---------- statistiche ---------- */
