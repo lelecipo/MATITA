@@ -201,6 +201,9 @@ button.lrow:active{transform:scale(.97)}
 #bk .pill.main{background:#fff;color:var(--accent);border-color:#fff}
 /* riquadro dipinto in cima: toglie la sfumatura di iOS e dà il colore alla barra di stato (cambia con la schermata) */
 #sb{position:fixed;top:0;left:0;right:0;height:11px;pointer-events:none;background:#000;-webkit-background-clip:text;background-clip:text;z-index:100}
+/* interruttore di sistema invisibile sopra ogni attività: il tocco vero lo fa scattare e iOS dà il tic */
+.opt{position:relative}
+.hsw{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;z-index:2;-webkit-tap-highlight-color:transparent}
 #hap{position:fixed;left:-200px;top:0;width:40px;height:40px;opacity:0;pointer-events:none}
 
 /* iPhone non permette di bloccare la rotazione da un'app web: in orizzontale mostro una schermata nera */
@@ -489,15 +492,8 @@ $('#view').addEventListener('click',e=>{
 
 /* tic al tocco: iPhone non ha la vibrazione web, ma un interruttore di sistema nascosto dà un colpetto (iOS 17.4+) */
 function haptic(){
-  try{
-    if(navigator.vibrate){navigator.vibrate(10);return}
-    /* metodo "interruttore": si crea al volo un interruttore di sistema nascosto e si preme la sua etichetta (iOS 18+) */
-    const i=document.createElement('input'); i.type='checkbox'; i.setAttribute('switch',''); i.id='hp'+Date.now();
-    const l=document.createElement('label'); l.htmlFor=i.id;
-    i.style.display=l.style.display='none';
-    document.head.append(i,l); l.click();
-    setTimeout(()=>{i.remove();l.remove()},500);
-  }catch(e){}
+  /* Android: vibrazione normale. Su iPhone (iOS 26.5+) il tic parte solo dal tocco reale su un interruttore invisibile: vedi .hsw */
+  try{ if(navigator.vibrate)navigator.vibrate(10) }catch(e){}
 }
 
 /* colore della barra di stato (e del riquadro dipinto in cima) */
@@ -516,7 +512,7 @@ function openDay(d){
   const {y,m}=view, k=key(y,m,d), cur=data[k];
   const wd=GIORNI_L[new Date(y,m,d).getDay()];
   $('#daySheet').innerHTML=`<h3>${d} ${MESI[m]}</h3><p>${wd.toUpperCase()} ${y}${spenti[k]&&!cur?' · SPENTO':''}</p>
-  ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
+  ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><input type="checkbox" switch class="hsw" tabindex="-1" aria-hidden="true"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
   <button class="opt clear" data-t=""><span class="xs"></span>Gomma</button>`;
   $('#daySheet').dataset.k=k;
   openSheet('daySheet');
