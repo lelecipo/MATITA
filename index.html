@@ -14,7 +14,7 @@
 <title>Matita</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;800&family=Space+Mono:wght@400;700&family=Archivo+Black&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#000;
@@ -26,6 +26,7 @@
   --sat:env(safe-area-inset-top,0px);
   --sab:env(safe-area-inset-bottom,0px);
   --dot:'Doto','Space Mono',ui-monospace,monospace;
+  --num:'Archivo Black','Arial Black','Helvetica Neue',Arial,sans-serif;
   --mono:'Space Mono',ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -190,24 +191,37 @@ button.lrow:active{transform:scale(.97)}
 .arow .bar i.w{background:#4a4a4a}
 
 /* ---------- statistiche: schede grafiche ---------- */
+.sc .big,.sc .bx b,.rec .m,.sc .gr .n,.sc .kn,.sc .ax{font-family:var(--num);font-weight:400;letter-spacing:-.03em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.pair .sc{margin:0;height:318px}
+.pair .tot{padding:18px 16px;display:flex;flex-direction:column}.pair .tot .big{font-size:128px;margin-top:auto;line-height:.8}
+.pair .co{padding:18px 16px;display:flex;flex-direction:column}.pair .co .big{font-size:60px;color:#fff;line-height:.8;margin-top:12px}
+.pair .co .dots{margin-top:auto;grid-template-columns:repeat(10,1fr);gap:2px}
+.sc.med{padding:20px}.sc.med .hd{display:flex;justify-content:space-between;gap:8px}.sc.med .hd span{font-size:10px;color:var(--dim)}
+.sc.med .tr{position:relative;margin-top:46px;height:2px;background:#333}
+.sc.med .fl{position:absolute;left:0;top:-1px;height:4px;background:#ef2b2d;border-radius:2px}
+.sc.med .kn{position:absolute;top:-34px;transform:translateX(-50%);font-size:34px;line-height:1;white-space:nowrap}
+.sc.med .kn:after{content:'';position:absolute;left:50%;top:40px;width:2px;height:12px;background:#ef2b2d;margin-left:-1px}
+.sc.med .ax{display:flex;justify-content:space-between;margin-top:14px;font-size:11px;color:var(--dim)}
+
 .sc{border-radius:22px;margin-bottom:14px;position:relative;overflow:hidden;border:1px solid var(--line)}
 .sc .l{font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
-.sc .big{font-family:var(--dot);font-weight:800;line-height:.85;letter-spacing:-.02em}
+.sc .big{line-height:.85}
 .sc.tot{background:#f2f2f2;color:#000;padding:20px 20px 22px;border-color:#f2f2f2}.sc.tot .l{color:#555}.sc.tot .big{font-size:110px;margin-top:16px}
 .sc.act{padding:20px 0 0}.sc.act .h{padding:0 20px;display:flex;gap:16px;align-items:flex-start}.sc.act .big{font-size:76px;color:#fff;flex:none}
 .sc.act .h p{margin:0;font-size:13px;line-height:1.35}.sc.act .h p+p{color:var(--dim);font-size:10px;margin-top:8px;line-height:1.5}
 .sc .dots{display:grid;grid-template-columns:repeat(20,1fr);margin-top:30px}.sc .dots i{aspect-ratio:1;border-radius:50%;background:#e6e6e6;display:block}.sc .dots i.on{background:#ef2b2d}
 .sc.pa{padding:20px}.sc .tm{display:flex;gap:4px;height:330px;margin-top:18px}.sc .tm .col{display:flex;flex-direction:column;gap:4px}
 .sc .bx{border-radius:12px;padding:14px;color:#fff;min-height:0;overflow:hidden}.sc .bx.dk{color:#000}
-.sc .bx b{display:block;font-family:var(--dot);font-size:34px;line-height:1}.sc .bx span{display:block;font-size:12px;margin-top:7px}
+.sc .bx b{display:block;font-size:30px;line-height:1}.sc .bx span{display:block;font-size:12px;margin-top:7px}
 .sc.gs{padding:20px}.sc .gr{display:flex;align-items:center;gap:12px;margin-top:8px}.sc .gr:first-of-type{margin-top:16px}
 .sc .gr .dn{width:30px;font-size:10px;letter-spacing:.12em;color:var(--dim)}
 .sc .gr .trk{flex:1;height:30px;position:relative;background-image:radial-gradient(#6a6a6a 1px,transparent 1.2px);background-size:4px 4px;border-radius:2px}
 .sc .gr .trk i{position:absolute;left:0;top:0;bottom:0;background:#f2f2f2;display:block}
-.sc .gr.best .trk i{background:#ef2b2d}.sc .gr .n{width:22px;text-align:right;font-family:var(--dot);font-weight:800;font-size:18px}
+.sc .gr.best .trk i{background:#ef2b2d}.sc .gr .n{width:22px;text-align:right;font-size:16px}
 .rc .l{margin:0 2px 12px;font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
 .rec{position:relative;height:400px;border-radius:18px;overflow:hidden;background:#ef2b2d;color:#fff;margin-bottom:14px}
-.rec .y{position:absolute;left:16px;top:16px;font-size:12px}.rec .m{position:absolute;right:16px;top:12px;font-family:var(--dot);font-weight:800;font-size:76px;line-height:1}
+.rec .y{position:absolute;left:16px;top:16px;font-size:12px}.rec .m{position:absolute;right:16px;top:12px;font-size:70px;line-height:1}
 .rec .sub{position:absolute;right:16px;top:96px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;text-align:right}
 .rec .w{position:absolute;left:0;bottom:0;width:60%;height:55%;background:#f2f2f2;color:#000;border-radius:0 18px 0 0}
 .rec .w .m{right:14px;top:10px;font-size:56px}.rec .w .sub{top:72px;right:14px}
@@ -681,8 +695,10 @@ function statsHTML(){
   items.forEach(t=>{const c=sums[0]<=sums[1]?0:1;cols[c].push(t);sums[c]+=tc[t.id]});
   const cell=t=>`<div class="bx ${t.ink==='#000'||t.ink==='#000000'||t.ink==='black'?'dk':''}" style="background:${t.color};flex:${tc[t.id]}"><b>${Math.round(tc[t.id]/tot*100)}%</b><span>${t.name}</span></div>`;
   const tm=cols.map((c,i)=>c.length?`<div class="col" style="flex:${sums[i]}">${c.map(cell).join('')}</div>`:'').join('');
-  return `<div class="sc tot"><div class="l">Allenamenti totali</div><div class="big">${tot}</div></div>
-  <div class="sc act"><div class="h"><div class="big">${act}%</div><div><p>costanza</p><p>${tot} allenamenti su ${denom} giorni disponibili<br>media ${avg} a settimana</p></div></div><div class="dots">${dots}</div></div>
+  const avgN=ks.length/Math.max(1,span/7), avgP=Math.min(100,avgN/7*100);
+  return `<div class="pair"><div class="sc tot"><div class="l">Allenamenti totali</div><div class="big">${tot}</div></div>
+  <div class="sc co"><div class="l">Costanza</div><div class="big">${act}%</div><div class="dots">${dots}</div></div></div>
+  <div class="sc med"><div class="hd"><div class="l">Media a settimana</div><span>allenamenti / sett.</span></div><div class="tr"><div class="fl" style="width:${avgP}%"></div><div class="kn" style="left:${avgP}%">${avg}</div></div><div class="ax"><span>0</span><span>7</span></div></div>
   <div class="sc pa"><div class="l">Per attività</div><div class="tm">${tm}</div></div>
   <div class="sc gs"><div class="l">Giorno della settimana</div>${GIORNI.map((g,i)=>`<div class="gr ${wd[i]===wmax&&wmax>0?'best':''}"><span class="dn">${g}</span><div class="trk"><i style="width:${wmax?wd[i]/wmax*100:0}%"></i></div><span class="n">${wd[i]}</span></div>`).join('')}</div>
   <div class="rc"><div class="l">Record</div><div class="rec"><span class="y">Mese migliore</span><span class="m">${bmn}</span><span class="sub">${MESI[bmo-1]} ${by}<br>allenamenti</span><div class="w"><span class="y">Settimana migliore</span><span class="m">${bwn}</span><span class="sub">${f(w0)} – ${f(w1)}<br>allenamenti</span></div></div></div>`;
