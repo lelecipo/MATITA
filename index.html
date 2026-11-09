@@ -274,7 +274,6 @@ button.lrow:active{transform:scale(.97)}
   <div class="lab" id="bkL">Giorni dall'ultimo backup</div>
   <div class="btns"><button class="pill main" id="bkYes">Backup</button><button class="pill" id="bkLater">Dopo</button></div>
 </div>
-<label id="hap" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>
 <div id="rot">Ruota il telefono<br>in verticale</div>
 
 <script>
@@ -491,8 +490,13 @@ $('#view').addEventListener('click',e=>{
 /* tic al tocco: iPhone non ha la vibrazione web, ma un interruttore di sistema nascosto dà un colpetto (iOS 17.4+) */
 function haptic(){
   try{
-    if(navigator.vibrate)navigator.vibrate(10);
-    const l=document.getElementById('hap'); if(l)l.click();
+    if(navigator.vibrate){navigator.vibrate(10);return}
+    /* metodo "interruttore": si crea al volo un interruttore di sistema nascosto e si preme la sua etichetta (iOS 18+) */
+    const i=document.createElement('input'); i.type='checkbox'; i.setAttribute('switch',''); i.id='hp'+Date.now();
+    const l=document.createElement('label'); l.htmlFor=i.id;
+    i.style.display=l.style.display='none';
+    document.head.append(i,l); l.click();
+    setTimeout(()=>{i.remove();l.remove()},500);
   }catch(e){}
 }
 
