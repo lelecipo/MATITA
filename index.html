@@ -155,7 +155,7 @@ button.lrow:active{transform:scale(.97)}
 .vsw button.on{background:var(--text);color:#000}
 .mlist{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
 .mlist .mrow{flex:1 1 0;min-height:0}
-.mgrid{flex:1 1 0;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 12px;align-content:space-between;margin:10px 0 6px}
+.mgrid{flex:1 1 0;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 12px;grid-template-rows:repeat(3,minmax(min-content,1fr));margin:10px 0 6px}
 .mm{display:block;width:100%;text-align:left;align-self:start}
 .mm .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
 .mm .hd span{font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
@@ -188,6 +188,29 @@ button.lrow:active{transform:scale(.97)}
 .arow.best .dn{color:var(--text)}
 .arow.best .bar i{background:var(--text)!important}
 .arow .bar i.w{background:#4a4a4a}
+
+/* ---------- statistiche: schede grafiche ---------- */
+.sc{border-radius:22px;margin-bottom:14px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.sc .l{font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.sc .big{font-family:var(--dot);font-weight:800;line-height:.85;letter-spacing:-.02em}
+.sc.tot{background:#f2f2f2;color:#000;padding:20px 20px 22px;border-color:#f2f2f2}.sc.tot .l{color:#555}.sc.tot .big{font-size:110px;margin-top:16px}
+.sc.act{padding:20px 0 0}.sc.act .h{padding:0 20px;display:flex;gap:16px;align-items:flex-start}.sc.act .big{font-size:76px;color:#fff;flex:none}
+.sc.act .h p{margin:0;font-size:13px;line-height:1.35}.sc.act .h p+p{color:var(--dim);font-size:10px;margin-top:8px;line-height:1.5}
+.sc .dots{display:grid;grid-template-columns:repeat(20,1fr);margin-top:30px}.sc .dots i{aspect-ratio:1;border-radius:50%;background:#e6e6e6;display:block}.sc .dots i.on{background:#ef2b2d}
+.sc.pa{padding:20px}.sc .tm{display:flex;gap:4px;height:330px;margin-top:18px}.sc .tm .col{display:flex;flex-direction:column;gap:4px}
+.sc .bx{border-radius:12px;padding:14px;color:#fff;min-height:0;overflow:hidden}.sc .bx.dk{color:#000}
+.sc .bx b{display:block;font-family:var(--dot);font-size:34px;line-height:1}.sc .bx span{display:block;font-size:12px;margin-top:7px}
+.sc.gs{padding:20px}.sc .gr{display:flex;align-items:center;gap:12px;margin-top:8px}.sc .gr:first-of-type{margin-top:16px}
+.sc .gr .dn{width:30px;font-size:10px;letter-spacing:.12em;color:var(--dim)}
+.sc .gr .trk{flex:1;height:30px;position:relative;background-image:radial-gradient(#6a6a6a 1px,transparent 1.2px);background-size:4px 4px;border-radius:2px}
+.sc .gr .trk i{position:absolute;left:0;top:0;bottom:0;background:#f2f2f2;display:block}
+.sc .gr.best .trk i{background:#ef2b2d}.sc .gr .n{width:22px;text-align:right;font-family:var(--dot);font-weight:800;font-size:18px}
+.rc .l{margin:0 2px 12px;font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.rec{position:relative;height:400px;border-radius:18px;overflow:hidden;background:#ef2b2d;color:#fff;margin-bottom:14px}
+.rec .y{position:absolute;left:16px;top:16px;font-size:12px}.rec .m{position:absolute;right:16px;top:12px;font-family:var(--dot);font-weight:800;font-size:76px;line-height:1}
+.rec .sub{position:absolute;right:16px;top:96px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;text-align:right}
+.rec .w{position:absolute;left:0;bottom:0;width:60%;height:55%;background:#f2f2f2;color:#000;border-radius:0 18px 0 0}
+.rec .w .m{right:14px;top:10px;font-size:56px}.rec .w .sub{top:72px;right:14px}
 .stbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:12px}
 
 /* ---------- avviso backup ---------- */
@@ -201,10 +224,6 @@ button.lrow:active{transform:scale(.97)}
 #bk .pill.main{background:#fff;color:var(--accent);border-color:#fff}
 /* riquadro dipinto in cima: toglie la sfumatura di iOS e dà il colore alla barra di stato (cambia con la schermata) */
 #sb{position:fixed;top:0;left:0;right:0;height:11px;pointer-events:none;background:#000;-webkit-background-clip:text;background-clip:text;z-index:100}
-/* interruttore di sistema invisibile sopra ogni attività: il tocco vero lo fa scattare e iOS dà il tic */
-.opt{position:relative}
-.hsw{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;z-index:2;-webkit-tap-highlight-color:transparent}
-#hap{position:fixed;left:-200px;top:0;width:40px;height:40px;opacity:0;pointer-events:none}
 
 /* iPhone non permette di bloccare la rotazione da un'app web: in orizzontale mostro una schermata nera */
 #rot{display:none;position:fixed;inset:0;z-index:50;background:#000;place-items:center;text-align:center;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
@@ -490,12 +509,6 @@ $('#view').addEventListener('click',e=>{
   const r=e.target.closest('.mrow,.mm'); if(r){view.m=+r.dataset.m;mode='month';render()}
 });
 
-/* tic al tocco: iPhone non ha la vibrazione web, ma un interruttore di sistema nascosto dà un colpetto (iOS 17.4+) */
-function haptic(){
-  /* Android: vibrazione normale. Su iPhone (iOS 26.5+) il tic parte solo dal tocco reale su un interruttore invisibile: vedi .hsw */
-  try{ if(navigator.vibrate)navigator.vibrate(10) }catch(e){}
-}
-
 /* colore della barra di stato (e del riquadro dipinto in cima) */
 function setBar(c){
   const e=document.getElementById('sb'); if(e)e.style.background=c;
@@ -512,7 +525,7 @@ function openDay(d){
   const {y,m}=view, k=key(y,m,d), cur=data[k];
   const wd=GIORNI_L[new Date(y,m,d).getDay()];
   $('#daySheet').innerHTML=`<h3>${d} ${MESI[m]}</h3><p>${wd.toUpperCase()} ${y}${spenti[k]&&!cur?' · SPENTO':''}</p>
-  ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><input type="checkbox" switch class="hsw" tabindex="-1" aria-hidden="true"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
+  ${TYPES.map(t=>`<button class="opt ${cur===t.id?'sel':''}" data-t="${t.id}"><span class="sw" style="background:${t.color}"></span><div>${t.name}${t.desc?`<em>${t.desc}</em>`:''}</div></button>`).join('')}
   <button class="opt clear" data-t=""><span class="xs"></span>Gomma</button>`;
   $('#daySheet').dataset.k=k;
   openSheet('daySheet');
@@ -522,7 +535,6 @@ $('#daySheet').addEventListener('click',e=>{
   const k=$('#daySheet').dataset.k, t=b.dataset.t;
   if(t){data[k]=t;delete spenti[k];saveSpenti()} else delete data[k];
   save(); closeSheets(); render();
-  if(t)haptic();                              /* un piccolo "tic" quando assegni un'attività */
 });
 
 /* ---------- scheda: apertura, spunte, azzera, modifica ---------- */
@@ -661,16 +673,19 @@ function statsHTML(){
   const w0=P(bw), w1=new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()+6);
   const f=d=>`${d.getDate()} ${MESI3[d.getMonth()]}`;
   const tot=ks.length, tmax=Math.max(...TYPES.map(t=>tc[t.id])), wmax=Math.max(...wd);
-  return `<div class="sec" style="margin-top:10px">Costanza</div>
-  <div class="two"><div class="card"><div class="l">Media a settimana</div><div class="v">${avg}<small>/ sett.</small></div><div class="s">dall'inizio</div></div>
-  <div class="card"><div class="l">Giorni attivi</div><div class="v">${act}<small>%</small></div><div class="s">sui giorni non spenti</div></div></div>
-  <div class="sec">Record</div>
-  <div class="two"><div class="card"><div class="l">Mese migliore</div><div class="v">${MESI3[bmo-1]}<small>${bmn}</small></div><div class="s">${by}</div></div>
-  <div class="card"><div class="l">Settimana migliore</div><div class="v">${bwn}<small>allen.</small></div><div class="s">${f(w0)} – ${f(w1)}</div></div></div>
-  <div class="sec">Per attività</div>
-  ${TYPES.map(t=>`<div class="arow"><span class="sw" style="background:${t.color}"></span><span class="nm">${t.name}</span><div class="bar"><i style="background:${t.color};width:${tmax?tc[t.id]/tmax*100:0}%"></i></div><span class="pc">${Math.round(tc[t.id]/tot*100)}%</span><span class="n">${tc[t.id]}</span></div>`).join('')}
-  <div class="sec">Giorno della settimana</div>
-  ${GIORNI.map((g,i)=>`<div class="arow ${wd[i]===wmax&&wmax>0?'best':''}"><span class="dn">${g}</span><div class="bar"><i class="w" style="width:${wmax?wd[i]/wmax*100:0}%"></i></div><span class="n">${wd[i]}</span></div>`).join('')}`;
+  const RED='#ef2b2d';
+  const dots=Array.from({length:100},(_,i)=>`<i class="${i<act?'on':''}"></i>`).join('');
+  /* blocchi per attività: due colonne con somme il più possibile uguali, aree proporzionali */
+  const items=TYPES.filter(t=>tc[t.id]>0).sort((x,y)=>tc[y.id]-tc[x.id]);
+  const cols=[[],[]], sums=[0,0];
+  items.forEach(t=>{const c=sums[0]<=sums[1]?0:1;cols[c].push(t);sums[c]+=tc[t.id]});
+  const cell=t=>`<div class="bx ${t.ink==='#000'||t.ink==='#000000'||t.ink==='black'?'dk':''}" style="background:${t.color};flex:${tc[t.id]}"><b>${Math.round(tc[t.id]/tot*100)}%</b><span>${t.name}</span></div>`;
+  const tm=cols.map((c,i)=>c.length?`<div class="col" style="flex:${sums[i]}">${c.map(cell).join('')}</div>`:'').join('');
+  return `<div class="sc tot"><div class="l">Allenamenti totali</div><div class="big">${tot}</div></div>
+  <div class="sc act"><div class="h"><div class="big">${act}%</div><div><p>costanza</p><p>${tot} allenamenti su ${denom} giorni disponibili<br>media ${avg} a settimana</p></div></div><div class="dots">${dots}</div></div>
+  <div class="sc pa"><div class="l">Per attività</div><div class="tm">${tm}</div></div>
+  <div class="sc gs"><div class="l">Giorno della settimana</div>${GIORNI.map((g,i)=>`<div class="gr ${wd[i]===wmax&&wmax>0?'best':''}"><span class="dn">${g}</span><div class="trk"><i style="width:${wmax?wd[i]/wmax*100:0}%"></i></div><span class="n">${wd[i]}</span></div>`).join('')}</div>
+  <div class="rc"><div class="l">Record</div><div class="rec"><span class="y">Mese migliore</span><span class="m">${bmn}</span><span class="sub">${MESI[bmo-1]} ${by}<br>allenamenti</span><div class="w"><span class="y">Settimana migliore</span><span class="m">${bwn}</span><span class="sub">${f(w0)} – ${f(w1)}<br>allenamenti</span></div></div></div>`;
 }
 $('#btnStats').onclick=()=>{$('#stBody').innerHTML=statsHTML();$('#stBody').scrollTop=0;$('#stats').classList.add('on')};
 $('#stBack').onclick=()=>$('#stats').classList.remove('on');
