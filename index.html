@@ -36,6 +36,7 @@ body{position:fixed;inset:0;width:100%;overflow:hidden;-webkit-user-select:none;
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
 #app,#scheda .in,#stats .in{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:var(--sat) 18px calc(var(--sab) + 14px)}
+#app,#stats .in{padding-top:calc(var(--sat) + 8px)}
 #app{padding-bottom:calc(var(--sab)*.5 + 8px)}
 
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;flex:none}
@@ -194,7 +195,9 @@ button.lrow:active{transform:scale(.97)}
 .sc .big,.sc .bx b,.rec .m,.sc .gr .n,.sc .kn,.sc .ax{font-family:var(--num);font-weight:400;letter-spacing:-.03em}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .pair .sc{margin:0;height:318px}
-.pair .tot{padding:18px 16px;display:flex;flex-direction:column}.pair .tot .big{font-size:128px;margin-top:auto;line-height:.8}
+.pair .tot{padding:18px 16px 14px;display:flex;flex-direction:column}.pair .tot .big{margin-top:auto;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:.74;letter-spacing:0;gap:8px}
+.pair .tot .big span{display:block}
+.pair .tot .big.d1{font-size:210px}.pair .tot .big.d2{font-size:172px}.pair .tot .big.d3{font-size:116px}.pair .tot .big.d4{font-size:86px}
 .pair .co{padding:18px 16px;display:flex;flex-direction:column}.pair .co .big{font-size:60px;color:#fff;line-height:.8;margin-top:12px}
 .pair .co .dots{margin-top:auto;grid-template-columns:repeat(10,1fr);gap:2px}
 .sc.med{padding:20px}.sc.med .hd{display:flex;justify-content:space-between;gap:8px}.sc.med .hd span{font-size:10px;color:var(--dim)}
@@ -216,15 +219,16 @@ button.lrow:active{transform:scale(.97)}
 .sc .bx b{display:block;font-size:30px;line-height:1}.sc .bx span{display:block;font-size:12px;margin-top:7px}
 .sc.gs{padding:20px}.sc .gr{display:flex;align-items:center;gap:12px;margin-top:8px}.sc .gr:first-of-type{margin-top:16px}
 .sc .gr .dn{width:30px;font-size:10px;letter-spacing:.12em;color:var(--dim)}
-.sc .gr .trk{flex:1;height:30px;position:relative;background-image:radial-gradient(#6a6a6a 1px,transparent 1.2px);background-size:4px 4px;border-radius:2px}
+.sc .gr .trk{flex:1;height:28px;position:relative;background-image:radial-gradient(#6a6a6a 1px,transparent 1.2px);background-size:4px 4px;border-radius:2px}
 .sc .gr .trk i{position:absolute;left:0;top:0;bottom:0;background:#f2f2f2;display:block}
 .sc .gr.best .trk i{background:#ef2b2d}.sc .gr .n{width:22px;text-align:right;font-size:16px}
 .rc .l{margin:0 2px 12px;font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
 .rec{position:relative;height:400px;border-radius:18px;overflow:hidden;background:#ef2b2d;color:#fff;margin-bottom:14px}
 .rec .y{position:absolute;left:16px;top:16px;font-size:12px}.rec .m{position:absolute;right:16px;top:12px;font-size:70px;line-height:1}
+.rec .y2{position:absolute;left:16px;top:36px;font-size:12px;opacity:.85}
 .rec .sub{position:absolute;right:16px;top:96px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;text-align:right}
 .rec .w{position:absolute;left:0;bottom:0;width:60%;height:55%;background:#f2f2f2;color:#000;border-radius:0 18px 0 0}
-.rec .w .m{right:14px;top:10px;font-size:56px}.rec .w .sub{top:72px;right:14px}
+.rec .w .m{right:14px;top:10px;font-size:56px}.rec .w .sub{top:72px;right:14px}.rec .w .y2{top:36px}
 .stbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:12px}
 
 /* ---------- avviso backup ---------- */
@@ -686,6 +690,7 @@ function statsHTML(){
   const [by,bmo]=bm.split('-').map(Number);
   const w0=P(bw), w1=new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()+6);
   const f=d=>`${d.getDate()} ${MESI3[d.getMonth()]}`;
+  const rng=(w0.getMonth()===w1.getMonth()?`${w0.getDate()}–${w1.getDate()} ${MESI3[w1.getMonth()]}`:`${f(w0)} – ${f(w1)}`).toLowerCase();
   const tot=ks.length, tmax=Math.max(...TYPES.map(t=>tc[t.id])), wmax=Math.max(...wd);
   const RED='#ef2b2d';
   const dots=Array.from({length:100},(_,i)=>`<i class="${i<act?'on':''}"></i>`).join('');
@@ -696,12 +701,12 @@ function statsHTML(){
   const cell=t=>`<div class="bx ${t.ink==='#000'||t.ink==='#000000'||t.ink==='black'?'dk':''}" style="background:${t.color};flex:${tc[t.id]}"><b>${Math.round(tc[t.id]/tot*100)}%</b><span>${t.name}</span></div>`;
   const tm=cols.map((c,i)=>c.length?`<div class="col" style="flex:${sums[i]}">${c.map(cell).join('')}</div>`:'').join('');
   const avgN=ks.length/Math.max(1,span/7), avgP=Math.min(100,avgN/7*100);
-  return `<div class="pair"><div class="sc tot"><div class="l">Allenamenti totali</div><div class="big">${tot}</div></div>
+  return `<div class="pair"><div class="sc tot"><div class="l">Allenamenti totali</div><div class="big d${Math.min(4,String(tot).length)}">${String(tot).split('').map(c=>`<span>${c}</span>`).join('')}</div></div>
   <div class="sc co"><div class="l">Costanza</div><div class="big">${act}%</div><div class="dots">${dots}</div></div></div>
   <div class="sc med"><div class="hd"><div class="l">Media a settimana</div><span>allenamenti / sett.</span></div><div class="tr"><div class="fl" style="width:${avgP}%"></div><div class="kn" style="left:${avgP}%">${avg}</div></div><div class="ax"><span>0</span><span>7</span></div></div>
   <div class="sc pa"><div class="l">Per attività</div><div class="tm">${tm}</div></div>
   <div class="sc gs"><div class="l">Giorno della settimana</div>${GIORNI.map((g,i)=>`<div class="gr ${wd[i]===wmax&&wmax>0?'best':''}"><span class="dn">${g}</span><div class="trk"><i style="width:${wmax?wd[i]/wmax*100:0}%"></i></div><span class="n">${wd[i]}</span></div>`).join('')}</div>
-  <div class="rc"><div class="l">Record</div><div class="rec"><span class="y">Mese migliore</span><span class="m">${bmn}</span><span class="sub">${MESI[bmo-1]} ${by}<br>allenamenti</span><div class="w"><span class="y">Settimana migliore</span><span class="m">${bwn}</span><span class="sub">${f(w0)} – ${f(w1)}<br>allenamenti</span></div></div></div>`;
+  <div class="rc"><div class="l">Record</div><div class="rec"><span class="y">Mese migliore</span><span class="y2">${MESI[bmo-1].toLowerCase()} ${by}</span><span class="m">${bmn}</span><span class="sub">allenamenti</span><div class="w"><span class="y">Settimana migliore</span><span class="y2">${rng}</span><span class="m">${bwn}</span><span class="sub">allenamenti</span></div></div></div>`;
 }
 $('#btnStats').onclick=()=>{$('#stBody').innerHTML=statsHTML();$('#stBody').scrollTop=0;$('#stats').classList.add('on')};
 $('#stBack').onclick=()=>$('#stats').classList.remove('on');
